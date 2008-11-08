@@ -1,0 +1,9 @@
+'import.rb' takes a command-line argument: the XML file to be imported into Scanty.
+
+It uses the default sqlite3 database at 'blog.db'
+
+Written by Christopher Swenson (http://www.caswenson.com/)
+
+Released under the MIT License: http://www.opensource.org/licenses/mit-license.php
+
+http://github.com/swenson/scanty_wordpress_import
