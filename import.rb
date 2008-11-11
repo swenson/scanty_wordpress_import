@@ -5,6 +5,7 @@ require 'sequel'
 DB = Sequel.connect('sqlite://blog.db')
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/lib')
 require 'post'
+Post.unrestrict_primary_key
 
 if ARGV.length == 0
   puts 'I require an XML file name to be passed as an argument.'
@@ -27,25 +28,27 @@ doc.root.elements["channel"].elements.each("item") { |item|
   # Scanty doesn't support pages or drafts yet
   if item.elements["wp:post_type"].text == "post" and
      item.elements["wp:status"].text == "publish" then
+     
+		post_id = item.elements["wp:post_id"].text.to_i
+    title = item.elements["title"].text
+    content = item.elements["content:encoded"].text
+    time = Time.parse item.elements["wp:post_date"].text
+		# post_parent = item.elements["wp:post_parent"].text.to_i
+    tags = []
+    item.elements.each("category") { |cat|
+      domain = cat.attribute("domain")
+      if domain and domain.value == "tag"
+        tags.unshift cat.text
+      end
+    }
+    tags = tags.map { |t| t.downcase }.sort.uniq
 
-     title = item.elements["title"].text
-     content = item.elements["content:encoded"].text
-     time = Time.parse item.elements["wp:post_date"].text
-     tags = []
-     item.elements.each("category") { |cat|
-       domain = cat.attribute("domain")
-       if domain and domain.value == "tag"
-         tags.unshift cat.text
-       end
-     }
-     tags = tags.map { |t| t.downcase }.sort.uniq
-
-     post = Post.new :title => title, :tags => tags, :body => content, :created_at => time, :slug => Post.make_slug(title)
-     if post.save
-       puts "Saved post: #{title}"
-     else
-       puts "ERROR! could not save post #{title}"
-       exit
-     end
+    post = Post.new :id => post_id, :title => title, :tags => tags, :body => content, :created_at => time, :slug => Post.make_slug(title)
+    if post.save
+      puts "Saved post: id ##{post.id} #{title}"
+    else
+      puts "ERROR! could not save post #{title}"
+      exit
+    end
   end
 }
