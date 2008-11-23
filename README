@@ -1,6 +1,10 @@
+This is a small project designed to take Wordpress entries and import them into Scanty.  All that is needed is Scanty and an exported XML file from your Wordpress blog.
+
 'import.rb' takes a command-line argument: the XML file to be imported into Scanty.
 
-It uses the default sqlite3 database at 'blog.db'
+Scanty currently only supports posts.  It does not support drafts, pages, or comments natively.  In order to preserve your comments, I'd recommend installing the Disqus plugin for Wordpress and exporting all of your comments to it.
+
+It uses the default sqlite3 database at 'blog.db'.  Modify import.rb to change this to your approriate database, though I would recommend trying it out on a small sqlite3 database before using it on your live code.
 
 Written by Christopher Swenson (http://www.caswenson.com/)
 

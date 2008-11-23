@@ -2,9 +2,15 @@ require 'rubygems'
 require 'rexml/document'
 require 'time'
 require 'sequel'
+
+# Change this to load the DB for your blog
 DB = Sequel.connect('sqlite://blog.db')
+
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/lib')
 require 'post'
+
+# This allows us to overwrite the primary key, so that you
+# can keep the same links for your comments
 Post.unrestrict_primary_key
 
 if ARGV.length == 0
@@ -15,6 +21,7 @@ end
 file = File.new(ARGV[0])
 
 # we have to hack the XML file, unfortunately, since it isn't valid
+# at least, for Wordpress 2.6.2
 file = file.read
 file.sub!(/xmlns:wp="http:\/\/wordpress.org\/export\/1.0\/"/,
          "xmlns:wp=\"http://wordpress.org/export/1.0/\"\nxmlns:excerpt=\"excerpt\"")
