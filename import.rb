@@ -50,7 +50,7 @@ doc.root.elements["channel"].elements.each("item") { |item|
     }
     tags = tags.map { |t| t.downcase }.sort.uniq
 
-    post = Post.new :id => post_id, :title => title, :tags => tags, :body => content, :created_at => time, :slug => Post.make_slug(title)
+    post = Post.new :id => post_id, :title => title, :tags => tags.join(' '), :body => content, :created_at => time, :slug => Post.make_slug(title)
     if post.save
       puts "Saved post: id ##{post.id} #{title}"
     else
